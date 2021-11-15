@@ -12,6 +12,9 @@ public protocol HTTPClient {
 }
 
 public final class RemoteFeedLoader {
+    
+    public typealias Result = Swift.Result<[FeedItem], RemoteFeedLoader.Error>
+    
     private let url: URL
     private let client: HTTPClient
     
@@ -25,13 +28,13 @@ public final class RemoteFeedLoader {
         self.url = url
     }
     
-    public func load(completion: @escaping (Error) -> Void) {
+    public func load(completion: @escaping (Result) -> Void) {
         client.get(from:  url) { result in
             switch result {
             case .success( _) :
-                completion(.invalidData)
+                completion(.failure(.invalidData))
             case .failure( _):
-                completion(.connectivity)
+                completion(.failure(.connectivity))
             }
         }
     }
