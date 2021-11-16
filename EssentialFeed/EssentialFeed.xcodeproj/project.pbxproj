@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B60668AF2743CF3C008D29E2 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60668AE2743CF3C008D29E2 /* HTTPClient.swift */; };
+		B60668B12743D0F2008D29E2 /* FeedMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60668B02743D0F2008D29E2 /* FeedMapper.swift */; };
 		B612295D271ABDC7004C8D85 /* EssentialFeed.docc in Sources */ = {isa = PBXBuildFile; fileRef = B612295C271ABDC7004C8D85 /* EssentialFeed.docc */; };
 		B6122963271ABDC7004C8D85 /* EssentialFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6122958271ABDC7004C8D85 /* EssentialFeed.framework */; };
 		B6122968271ABDC7004C8D85 /* EssentialFeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6122967271ABDC7004C8D85 /* EssentialFeedTests.swift */; };
@@ -30,6 +31,7 @@
 
 /* Begin PBXFileReference section */
 		B60668AE2743CF3C008D29E2 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
+		B60668B02743D0F2008D29E2 /* FeedMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedMapper.swift; sourceTree = "<group>"; };
 		B6122958271ABDC7004C8D85 /* EssentialFeed.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EssentialFeed.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B612295B271ABDC7004C8D85 /* EssentialFeed.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EssentialFeed.h; sourceTree = "<group>"; };
 		B612295C271ABDC7004C8D85 /* EssentialFeed.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = EssentialFeed.docc; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 			children = (
 				B682005E273D2595002A025E /* RemoteFeedLoader.swift */,
 				B60668AE2743CF3C008D29E2 /* HTTPClient.swift */,
+				B60668B02743D0F2008D29E2 /* FeedMapper.swift */,
 			);
 			path = FeedApi;
 			sourceTree = "<group>";
@@ -227,6 +230,7 @@
 			files = (
 				B682005F273D2595002A025E /* RemoteFeedLoader.swift in Sources */,
 				B60668AF2743CF3C008D29E2 /* HTTPClient.swift in Sources */,
+				B60668B12743D0F2008D29E2 /* FeedMapper.swift in Sources */,
 				B6122975271ABF0B004C8D85 /* FeedLoader.swift in Sources */,
 				B6122973271ABE16004C8D85 /* FeedItem.swift in Sources */,
 				B612295D271ABDC7004C8D85 /* EssentialFeed.docc in Sources */,
