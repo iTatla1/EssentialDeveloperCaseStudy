@@ -57,43 +57,30 @@ class URLSessionHTTPClientTest: XCTestCase {
     
     func test_getFromURL_failsOnRequestError() {
         let requestError = NSError(domain:"any error", code: 1)
-        URLProtocolStub.stub(data: nil, response: nil, error: requestError)
         
-        
-        
-        let expectation = expectation(description: "Wait for async operation")
-        
-        makeSUT().get(from: anyURL()) { result in
-            switch result {
-            case let .failure(receivedError as NSError):
-                XCTAssertEqual(receivedError.domain, requestError.domain)
-                XCTAssertEqual(receivedError.code, requestError.code)
-            default:
-                XCTFail("Expected error: \(requestError), got \(result) else instead")
-            }
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 1.0)
+        let receivedError = resultErrorFor(data: nil, response: nil, error: requestError) as NSError?
+        XCTAssertEqual(receivedError?.domain, requestError.domain)
+        XCTAssertEqual(receivedError?.code, requestError.code)
     }
     
     
-    func test_getFromURL_failsOnAllNilValues() {
-        URLProtocolStub.stub(data: nil, response: nil, error: nil)
+    func test_getFromURL_failsOnAllInvalidRepresentationCases() {
+        let nonHTTPURLResponse = URLResponse(url: anyURL(), mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
+        let httpURLResponse = HTTPURLResponse(url: anyURL(), statusCode: 200, httpVersion: nil, headerFields: [:])
+        let anyData = Data.init("any data".utf8)
+        let anyError = NSError(domain: "any error", code: 0)
         
-        
-        
-        let expectation = expectation(description: "Wait for async operation")
-        
-        makeSUT().get(from: anyURL()) { result in
-            switch result {
-            case .failure(_ ):
-               break
-            default:
-                XCTFail("Expected failure, got \(result) else instead")
-            }
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 1.0)
+        XCTAssertNotNil(resultErrorFor(data: nil,response: nil, error:nil))
+        XCTAssertNotNil(resultErrorFor(data: nil,response: nonHTTPURLResponse, error:nil))
+        XCTAssertNotNil(resultErrorFor(data: nil,response: httpURLResponse, error:nil))
+        XCTAssertNotNil(resultErrorFor(data: anyData, response: nil, error:nil))
+        XCTAssertNotNil(resultErrorFor(data: anyData, response: nil, error:anyError))
+        XCTAssertNotNil(resultErrorFor(data: nil, response: nonHTTPURLResponse, error:anyError))
+        XCTAssertNotNil(resultErrorFor(data: nil, response: httpURLResponse, error:anyError))
+        XCTAssertNotNil(resultErrorFor(data: anyData, response: nonHTTPURLResponse, error:anyError))
+        XCTAssertNotNil(resultErrorFor(data: anyData, response: httpURLResponse, error:anyError))
+        XCTAssertNotNil(resultErrorFor(data: anyData, response: nonHTTPURLResponse, error:nil))
+//        XCTAssertNotNil(<#T##expression: Any?##Any?#>)
     }
     
     
@@ -111,6 +98,26 @@ class URLSessionHTTPClientTest: XCTestCase {
         return URL(string: "http://www.anyurl.com")!
     }
     
+    private func resultErrorFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #filePath, line: UInt = #line) -> Error? {
+        URLProtocolStub.stub(data: data, response: response, error: error)
+        
+        
+        let sut = makeSUT(file: file, line: line)
+        let expectation = expectation(description: "Wait for async operation")
+        
+        var receivedError: Error?
+        sut.get(from: anyURL()) { result in
+            switch result {
+            case .failure(let error ):
+               receivedError = error
+            default:
+                XCTFail("Expected failure, got \(result) else instead", file: file, line: line)
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+        return receivedError
+    }
     
     private class URLProtocolStub: URLProtocol {
         
