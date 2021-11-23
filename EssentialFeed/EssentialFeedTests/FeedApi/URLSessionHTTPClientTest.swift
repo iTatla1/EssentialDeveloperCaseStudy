@@ -21,7 +21,7 @@ class URLSessionHTTPClient {
         session.dataTask(with: url) { data, response, error in
             if let error = error {
                 completion(.failure(error))
-            } else if let data = data, let response = response as? HTTPURLResponse, !data.isEmpty {
+            } else if let data = data, let response = response as? HTTPURLResponse {
                 completion(.success((data, response)))
             }
             else {
@@ -71,7 +71,6 @@ class URLSessionHTTPClientTest: XCTestCase {
                
         XCTAssertNotNil(resultErrorFor(data: nil,response: nil, error: nil))
         XCTAssertNotNil(resultErrorFor(data: nil,response: nonHTTPURLResponse(), error: nil))
-        XCTAssertNotNil(resultErrorFor(data: nil,response: httpURLResponse(), error: nil))
         XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: nil))
         XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: anyNSError()))
         XCTAssertNotNil(resultErrorFor(data: nil, response: nonHTTPURLResponse(), error: anyNSError()))
@@ -93,6 +92,28 @@ class URLSessionHTTPClientTest: XCTestCase {
             switch result {
             case let .success((recData, recResponse)):
                 XCTAssertEqual(recData, data)
+                XCTAssertEqual(recResponse.url, response.url)
+                XCTAssertEqual(recResponse.statusCode, response.statusCode)
+            case .failure(_):
+                
+                XCTFail("Expected success got \(result) instead")
+            }
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 1.0)
+    }
+    
+    func test_getFromURL_succeedWithEmptyDataONHTTPURLResponseWithNilData() {
+        let response = httpURLResponse()
+        URLProtocolStub.stub(data: nil, response: response, error: nil)
+        
+        let expectation = expectation(description: "Wait for async operation")
+        makeSUT().get(from: anyURL()) { result in
+            switch result {
+            case let .success((recData, recResponse)):
+                let emptyData = Data()
+                XCTAssertEqual(recData, emptyData)
                 XCTAssertEqual(recResponse.url, response.url)
                 XCTAssertEqual(recResponse.statusCode, response.statusCode)
             case .failure(_):
