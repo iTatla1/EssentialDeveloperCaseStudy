@@ -68,7 +68,7 @@ class URLSessionHTTPClientTest: XCTestCase {
     
     
     func test_getFromURL_failsOnAllInvalidRepresentationCases() {
-               
+        
         XCTAssertNotNil(resultErrorFor(data: nil,response: nil, error: nil))
         XCTAssertNotNil(resultErrorFor(data: nil,response: nonHTTPURLResponse(), error: nil))
         XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: nil))
@@ -79,7 +79,7 @@ class URLSessionHTTPClientTest: XCTestCase {
         XCTAssertNotNil(resultErrorFor(data: anyData(), response: httpURLResponse(), error: anyNSError()))
         XCTAssertNotNil(resultErrorFor(data: anyData(), response: nonHTTPURLResponse(), error: nil))
         
-//        XCTAssertNotNil(<#T##expression: Any?##Any?#>)
+        //        XCTAssertNotNil(<#T##expression: Any?##Any?#>)
     }
     
     func test_getFromURL_succeedOnHTTPURLResponseWithData() {
@@ -116,7 +116,7 @@ class URLSessionHTTPClientTest: XCTestCase {
     
     private func anyData() -> Data {
         return  Data.init("any data".utf8)
-
+        
     }
     
     private func nonHTTPURLResponse() -> URLResponse {
@@ -132,47 +132,51 @@ class URLSessionHTTPClientTest: XCTestCase {
     }
     
     private func resultErrorFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #filePath, line: UInt = #line) -> Error? {
-        URLProtocolStub.stub(data: data, response: response, error: error)
+        let result = resultFor(data: data, response: response, error: error, file: file, line: line)
         
-        
-        let sut = makeSUT(file: file, line: line)
-        let expectation = expectation(description: "Wait for async operation")
-        
-        var receivedError: Error?
-        sut.get(from: anyURL()) { result in
-            switch result {
-            case .failure(let error ):
-               receivedError = error
-            default:
-                XCTFail("Expected failure, got \(result) else instead", file: file, line: line)
-            }
-            expectation.fulfill()
+        switch result {
+        case .failure(let error ):
+            return  error
+        default:
+            XCTFail("Expected failure, got \(result) else instead", file: file, line: line)
+            return nil
         }
-        wait(for: [expectation], timeout: 1.0)
-        return receivedError
     }
     
     private func resultValuesFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #filePath, line: UInt = #line) -> (data: Data, response: HTTPURLResponse)? {
+        let result = resultFor(data: data, response: response, error: error, file: file, line: line)
+        
+        switch result {
+        case let .success(response):
+            return response
+        default:
+            XCTFail("Expected success, got \(result) else instead", file: file, line: line)
+            return nil
+        }
+        
+    }
+    
+    
+    private func resultFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #filePath, line: UInt = #line) -> HTTPClientResult {
         URLProtocolStub.stub(data: data, response: response, error: error)
         
         
         let sut = makeSUT(file: file, line: line)
         let expectation = expectation(description: "Wait for async operation")
         
-        var receivedVlaues: (Data, HTTPURLResponse)?
+        var receivedResult: HTTPClientResult!
         sut.get(from: anyURL()) { result in
             switch result {
             case let .success(response):
-                receivedVlaues = response
-            default:
-                XCTFail("Expected success, got \(result) else instead", file: file, line: line)
+                receivedResult = .success(response)
+            case let .failure(error):
+                receivedResult = .failure(error)
             }
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 1.0)
-        return receivedVlaues
+        return receivedResult
     }
-    
     
     private class URLProtocolStub: URLProtocol {
         
