@@ -18,10 +18,13 @@ class URLSessionHTTPClient {
     struct UnExpectedValuesRepresentationError: Error{}
     
     func get(from url: URL, completion: @escaping (HTTPClientResult) -> Void){
-        session.dataTask(with: url) { _, _, error in
+        session.dataTask(with: url) { data, response, error in
             if let error = error {
                 completion(.failure(error))
-            } else {
+            } else if let data = data, let response = response as? HTTPURLResponse, !data.isEmpty {
+                completion(.success((data, response)))
+            }
+            else {
                 completion(.failure(UnExpectedValuesRepresentationError()))
             }
         }.resume()
@@ -78,6 +81,28 @@ class URLSessionHTTPClientTest: XCTestCase {
         XCTAssertNotNil(resultErrorFor(data: anyData(), response: nonHTTPURLResponse(), error: nil))
         
 //        XCTAssertNotNil(<#T##expression: Any?##Any?#>)
+    }
+    
+    func test_getFromURL_succeedOnHTTPURLResponseWithData() {
+        let data = anyData()
+        let response = httpURLResponse()
+        URLProtocolStub.stub(data: data, response: response, error: nil)
+        
+        let expectation = expectation(description: "Wait for async operation")
+        makeSUT().get(from: anyURL()) { result in
+            switch result {
+            case let .success((recData, recResponse)):
+                XCTAssertEqual(recData, data)
+                XCTAssertEqual(recResponse.url, response.url)
+                XCTAssertEqual(recResponse.statusCode, response.statusCode)
+            case .failure(_):
+                
+                XCTFail("Expected success got \(result) instead")
+            }
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 1.0)
     }
     
     
