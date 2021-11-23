@@ -15,10 +15,14 @@ class URLSessionHTTPClient {
         self.session = session
     }
     
+    struct UnExpectedValuesRepresentationError: Error{}
+    
     func get(from url: URL, completion: @escaping (HTTPClientResult) -> Void){
         session.dataTask(with: url) { _, _, error in
             if let error = error {
                 completion(.failure(error))
+            } else {
+                completion(.failure(UnExpectedValuesRepresentationError()))
             }
         }.resume()
     }
@@ -71,6 +75,29 @@ class URLSessionHTTPClientTest: XCTestCase {
         }
         wait(for: [expectation], timeout: 1.0)
     }
+    
+    
+    func test_getFromURL_failsOnAllNilValues() {
+        URLProtocolStub.stub(data: nil, response: nil, error: nil)
+        
+        
+        
+        let expectation = expectation(description: "Wait for async operation")
+        
+        makeSUT().get(from: anyURL()) { result in
+            switch result {
+            case .failure(_ ):
+               break
+            default:
+                XCTFail("Expected failure, got \(result) else instead")
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+    
+    
+    
     
     // MARK:- Helpers
     
