@@ -1,6 +1,6 @@
 # Essential App Case Study
 
-![Build Passed](https://github.com/iTatla1/EssentialDeveloperCaseStudy/actions/workflows/ci.yml/badge.svg)
+[![Swift](https://github.com/iTatla1/EssentialDeveloperCaseStudy/actions/workflows/swift.yml/badge.svg)](https://github.com/iTatla1/EssentialDeveloperCaseStudy/actions/workflows/swift.yml)
 
 ## Image Feed Feature Specs
 
