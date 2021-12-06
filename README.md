@@ -1,5 +1,7 @@
 # Essential App Case Study
 
+![Build Passed](https://github.com/iTatla1/EssentialDeveloperCaseStudy/actions/workflows/ci.yml/badge.svg)
+
 ## Image Feed Feature Specs
 
 ### Story: Customer requests to see their image feed
