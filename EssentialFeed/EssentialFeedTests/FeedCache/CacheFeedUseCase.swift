@@ -81,32 +81,25 @@ class CacheFeedUseCase: XCTestCase {
         let store = FeedStoreSpy()
         var sut: LocalFeedLoader? = LocalFeedLoader(store: store, currentDate: Date.init)
         
-        var receivedError: Error?
-        sut?.save([uniqueItem()], completion: { error in
-            receivedError = error
-        })
+        var receivedErrors =  [LocalFeedLoader.SaveResult]()
+        sut?.save([uniqueItem()], completion: {receivedErrors.append($0)})
         sut = nil
         store.completeDeletion(with: anyNSError())
         
-        
-        XCTAssertNil(receivedError)
+        XCTAssertTrue(receivedErrors.isEmpty)
     }
     
     func test_save_doesNotDeliverInsertionErrorAfterSUTInstancehasbeenDeallocated() {
         let store = FeedStoreSpy()
         var sut: LocalFeedLoader? = LocalFeedLoader(store: store, currentDate: Date.init)
         
-        var receivedError: Error?
-        sut?.save([uniqueItem()], completion: { error in
-            receivedError = error
-        })
+        var receivedErrors = [LocalFeedLoader.SaveResult]()
+        sut?.save([uniqueItem()], completion: {receivedErrors.append($0)})
         store.completeDeletionSuccessfully()
         sut = nil
-        
         store.completeInsertion(with: anyNSError())
         
-        
-        XCTAssertNil(receivedError)
+        XCTAssertTrue(receivedErrors.isEmpty)
     }
 
     
@@ -124,17 +117,16 @@ class CacheFeedUseCase: XCTestCase {
     private func expect(_ sut: LocalFeedLoader, toCompleteWithError expectedError: NSError?, when action: () -> (),file: StaticString = #filePath, line: UInt = #line) {
         
         let exp = expectation(description: "Wait for async code to finish")
-        var receivedError: Error?
-        sut.save([uniqueItem()]) { error in
-            receivedError = error
+        var receivedErrors = [LocalFeedLoader.SaveResult]()
+        sut.save([uniqueItem()]) {
+            receivedErrors.append($0)
             exp.fulfill()
         }
         
         action()
         
         wait(for: [exp], timeout: 1.0)
-        XCTAssertEqual(receivedError as NSError?, expectedError, file: file, line: line)
-
+        XCTAssertEqual(receivedErrors as [NSError?], [expectedError], file: file, line: line)
     }
     
     private func uniqueItem() -> FeedItem {
