@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03766D1827E63B1E00DFD917 /* ValidateFeedCacheUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03766D1727E63B1E00DFD917 /* ValidateFeedCacheUseCaseTests.swift */; };
 		03A7F09227DDC2D4005005AA /* LoadFeedFromCacheUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A7F09127DDC2D4005005AA /* LoadFeedFromCacheUseCase.swift */; };
 		03A7F09527DDC3CE005005AA /* FeedStoreSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A7F09427DDC3CE005005AA /* FeedStoreSpy.swift */; };
 		B60668AF2743CF3C008D29E2 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60668AE2743CF3C008D29E2 /* HTTPClient.swift */; };
@@ -49,6 +50,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03766D1727E63B1E00DFD917 /* ValidateFeedCacheUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidateFeedCacheUseCaseTests.swift; sourceTree = "<group>"; };
 		03A7F09127DDC2D4005005AA /* LoadFeedFromCacheUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadFeedFromCacheUseCase.swift; sourceTree = "<group>"; };
 		03A7F09427DDC3CE005005AA /* FeedStoreSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedStoreSpy.swift; sourceTree = "<group>"; };
 		B60668AE2743CF3C008D29E2 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
@@ -174,6 +176,7 @@
 				03A7F09327DDC3C0005005AA /* Helpers */,
 				B63A4419276B1F600043FA0A /* CacheFeedUseCase.swift */,
 				03A7F09127DDC2D4005005AA /* LoadFeedFromCacheUseCase.swift */,
+				03766D1727E63B1E00DFD917 /* ValidateFeedCacheUseCaseTests.swift */,
 			);
 			path = FeedCache;
 			sourceTree = "<group>";
@@ -372,6 +375,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03766D1827E63B1E00DFD917 /* ValidateFeedCacheUseCaseTests.swift in Sources */,
 				B682005C273D0D04002A025E /* LoadFeedFromRemoteUseCaseTests.swift in Sources */,
 				B6C8F483274B6D690089A8E2 /* URLSessionHTTPClientTest.swift in Sources */,
 				03A7F09527DDC3CE005005AA /* FeedStoreSpy.swift in Sources */,
